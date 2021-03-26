@@ -2,41 +2,45 @@ package eu.micprisa.appa;
 
 import android.content.Intent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-//sources: https://www.youtube.com/watch?v=AD5qt7xoUU8&t=126s
-//https://www.youtube.com/watch?v=QtCHlQ2sLx8
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private TextView result;
-    private EditText  num1;
-    private EditText num2;
+    private TextView positionAddress;
+    private boolean isPositionSet;
+    private Marker marker;
+    private final int RESULT_CODE = 12345;
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
+
     //here will be sent data to App b via button
     public void sendDataToOtherApp (View view){
 
-        num1 = findViewById(R.id.mainNum1);
-        num2 = findViewById(R.id.mainNum2);
-        if (num1.getText().toString().equals("") || num2.getText().toString().equals("")){
-            Toast.makeText(MainActivity.this, "Please insert numbers", Toast.LENGTH_SHORT).show();
-        }else {
-            Intent i = new Intent();
-            //i.setAction(Intent.ACTION_SEND);
-            //i.putExtra(Intent.EXTRA_TEXT, "")
-            //i.setType("text/plain");
-            i.setClassName("eu.micprisa.appb","eu.micprisa.appb.MainActivity");
-            i.putExtra("num1", Integer.parseInt(num1.getText().toString()));
-            i.putExtra("num2", Integer.parseInt(num2.getText().toString()));
-            startActivityForResult(i, 123);
+        if(this.isPositionSet) {
+            Intent getAddress = new Intent();
+            getAddress.setClassName("eu.micprisa.appb", "eu.micprisa.appb.MainActivity");
+            getAddress.putExtra("lat", this.marker.getPosition().latitude);
+            getAddress.putExtra("lng", this.marker.getPosition().longitude);
+            startActivityForResult(getAddress, this.RESULT_CODE);
+        } else{
+            Toast.makeText(MainActivity.this, "Please chose a position on map.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -44,16 +48,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        result = findViewById(R.id.mainResult);
-        if (requestCode == 123) {
-            if (resultCode == RESULT_OK) {
-                int result = data.getIntExtra("result",0);
-                this.result.setText("" + result);
+        this.positionAddress= findViewById(R.id.positionAddress);
+        if(requestCode == this.RESULT_CODE){
+            if(resultCode == RESULT_OK){
+                String positionAddress = data.getStringExtra("positionAddress");
+                if(positionAddress != null){
+                    this.positionAddress.setText(positionAddress);
+                }else {
+                    this.positionAddress.setText("Data not received");
+                }
             }
-        }
-        if(resultCode == RESULT_CANCELED){
-            result.setText("Data not processed!");
+            if(resultCode == RESULT_CANCELED){
+                this.positionAddress.setText("Data not processed");
+            }
         }
     }
 
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+        this.isPositionSet = false;
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(MainActivity.this.isPositionSet) {
+                    MainActivity.this.marker.remove();
+                }
+                MainActivity.this.isPositionSet = true;
+                MainActivity.this.marker = googleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        //.draggable(true)
+                        .title("chosen position"));
+            }
+        });
+
+    }
 }
