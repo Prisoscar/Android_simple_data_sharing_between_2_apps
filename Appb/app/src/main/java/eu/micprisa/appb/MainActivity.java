@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             this.address = new Geocoder(this, Locale.getDefault()).getFromLocation(this.lat, this.lng, 1).get(0).getAddressLine(0);
         }catch (IOException e){
             this.address = "IOException has occurred";
+        }catch (IndexOutOfBoundsException e){
+            this.address = "No address found";
         }
         //settings for center camera o marker
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -113,12 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         //get device position
         getPosition();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED){
-            googleMap.isMyLocationEnabled();
-        }
-
     }
 
     private void getPosition() {
@@ -130,12 +126,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(Location location) {
                     //Here we'll get device position
-                    LatLng deviceLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    map.addMarker(new MarkerOptions()
-                            .position(deviceLatLng)
-                            .title("Your Position")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    );
+                    try {
+                        LatLng deviceLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        map.addMarker(new MarkerOptions()
+                                .position(deviceLatLng)
+                                .title("Your Position")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        );
+                    }catch (NullPointerException e){
+                        Toast.makeText(MainActivity.this, "Location is turned off.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         } else {
