@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MainActivity.this.isPositionSet = true;
                 MainActivity.this.marker = googleMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        //.draggable(true)
                         .title("chosen position"));
             }
         });
