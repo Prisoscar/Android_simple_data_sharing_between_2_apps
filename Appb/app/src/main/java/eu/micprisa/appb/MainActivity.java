@@ -52,14 +52,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         LatLng latLng = new LatLng(lat, lng);
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        /*googleMap.addMarker(new MarkerOptions()
+        //googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title("chosen position"));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED){
             googleMap.setMyLocationEnabled(true);
-        }*/
+        }
 
     }
 }
