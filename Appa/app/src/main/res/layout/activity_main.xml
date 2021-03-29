@@ -14,7 +14,7 @@
             android:onClick="sendDataToOtherApp"
             tools:text="Get address" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/map" app:layout_constraintVertical_bias="0.321"/>
+            app:layout_constraintTop_toBottomOf="@+id/map" app:layout_constraintVertical_bias="0.156"/>
     <TextView
             android:text="Address"
             android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
             tools:text="Address" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.498" app:layout_constraintVertical_bias="0.453"/>
+            app:layout_constraintVertical_bias="0.28"/>
     <fragment
             android:layout_width="405dp"
             android:layout_height="447dp"

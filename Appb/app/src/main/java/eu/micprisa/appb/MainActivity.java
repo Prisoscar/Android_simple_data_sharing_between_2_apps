@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         );
                     }catch (NullPointerException e){
-                        Toast.makeText(MainActivity.this, "Location is turned off.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Location is not available.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
